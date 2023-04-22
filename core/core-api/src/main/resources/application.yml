@@ -44,3 +44,9 @@ jwt:
   refresh-token-secret: d29ybGQgbXkgbmFtZSBpcyBzc29uZyBoYWhhaGFoYWhhaGFoYSBydXJ1cnVydXJ1cnVydXJ1ZHNmc2Rmc2Rmc2Rmc2FkCg== # it must be different from the access key secret
   access-token-validity-in-seconds: 600 # 10 min
   refresh-token-validity-in-seconds: 86400 # 24 hour # ??? ?? ?? ? 1?
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /docs/index.html
