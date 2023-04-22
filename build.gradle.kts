@@ -5,7 +5,8 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0" apply false
 
     kotlin("jvm") version "1.7.22"
-    kotlin("plugin.spring") version "1.7.22" apply false
+    kotlin("plugin.spring") version "1.7.22"
+    kotlin("plugin.jpa") version "1.7.22"
 }
 
 java.sourceCompatibility = JavaVersion.valueOf("VERSION_${property("javaVersion")}")
@@ -26,9 +27,24 @@ subprojects {
     apply(plugin = "io.spring.dependency-management")
     apply(plugin = "org.springframework.boot")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+    apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
 
     apply(plugin = "kotlin")
     apply(plugin = "kotlin-spring")
+
+
+    allOpen {
+        annotation("jakarta.persistence.Entity")
+        annotation("jakarta.persistence.Embeddable")
+        annotation("jakarta.persistence.MappedSuperclass")
+    }
+
+    noArg {
+        annotation("jakarta.persistence.Entity")
+        annotation("jakarta.persistence.Embeddable")
+        annotation("jakarta.persistence.MappedSuperclass")
+    }
+
 
     dependencies {
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
