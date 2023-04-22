@@ -1,5 +1,6 @@
 dependencies {
     implementation(project(":core:core-enum"))
+    implementation(project(":support:swagger"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
