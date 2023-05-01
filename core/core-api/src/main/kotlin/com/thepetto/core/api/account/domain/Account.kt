@@ -1,17 +1,18 @@
 package com.thepetto.core.api.account.domain
 
+import com.thepetto.core.api.global.domain.BaseTimeEntity
 import jakarta.persistence.*
 
 
 @Entity
-class Account(
+class Account (
     username: String,
     password: String,
     tokenWeight: Long,
     nickname: String,
     activated: Boolean,
     authorities: MutableSet<Authority>,
-) {
+ ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
