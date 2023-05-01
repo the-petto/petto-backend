@@ -33,9 +33,6 @@ class AccountServiceImpl(
 
         val authentication: Authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken)
 
-        // 그 객체를 시큐리티 컨텍스트에 저장
-        SecurityContextHolder.getContext().authentication = authentication
-
         val tokenWeight: Long = (authentication.principal as AccountAdapter).account.tokenWeight
         // 인증 정보를 기준으로 jwt access 토큰 생성
         val accessToken: String = tokenProvider.createToken(authentication, tokenWeight)
