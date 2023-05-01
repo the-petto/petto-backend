@@ -17,6 +17,7 @@ class AccountController(
 ) {
     @PostMapping("/accounts/token")
     fun authorize(@Valid @RequestBody loginDto: RequestAuthenticateDto): ResponseEntity<CommonResponse> {
+        println(loginDto.username + " " + loginDto.password)
         val token = accountService.authenticate(loginDto)
 
         return ResponseEntity<CommonResponse>(CommonResponse(

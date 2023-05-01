@@ -19,7 +19,7 @@ class GlobalExceptionHandler {
      * Bean Validation에 실패했을 때, 에러메시지를 내보내기 위한 Exception Handler
      */
     @ExceptionHandler(value = [BindException::class, HttpMessageNotReadableException::class])
-    protected fun handleBindException(ex: RuntimeException): ResponseEntity<ErrorResponse> {
+    protected fun handleBindException(): ResponseEntity<ErrorResponse> {
         val customCode = CustomExceptionCode.REQUEST_PARAMETER_BIND_FAILED
         val response = ErrorResponse(
             message = customCode.message
@@ -28,7 +28,7 @@ class GlobalExceptionHandler {
         return ResponseEntity<ErrorResponse>(response, customCode.status)
     }
     @ExceptionHandler(value = [NotFoundAccountException::class, NotFoundBoardException::class])
-    protected fun handleNotFoundException(ex: RuntimeException): ResponseEntity<ErrorResponse> {
+    protected fun handleNotFoundException(): ResponseEntity<ErrorResponse> {
         val customCode = CustomExceptionCode.NOT_FOUND
         val response = ErrorResponse(
             message = customCode.message
