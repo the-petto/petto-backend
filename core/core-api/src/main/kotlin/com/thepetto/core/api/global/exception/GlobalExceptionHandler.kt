@@ -4,6 +4,7 @@ import com.thepetto.core.api.global.dto.ErrorResponse
 import com.thepetto.core.api.global.exception.custom.DuplicateMemberException
 import com.thepetto.core.api.global.exception.custom.InvalidRefreshTokenException
 import com.thepetto.core.api.global.exception.custom.NotFoundAccountException
+import com.thepetto.core.api.global.exception.custom.NotFoundBoardException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -18,7 +19,7 @@ class GlobalExceptionHandler {
      * Bean Validation에 실패했을 때, 에러메시지를 내보내기 위한 Exception Handler
      */
     @ExceptionHandler(value = [BindException::class, HttpMessageNotReadableException::class])
-    protected fun handleBindException(ex: BindException): ResponseEntity<ErrorResponse> {
+    protected fun handleBindException(ex: RuntimeException): ResponseEntity<ErrorResponse> {
         val customCode = CustomExceptionCode.REQUEST_PARAMETER_BIND_FAILED
         val response = ErrorResponse(
             message = customCode.message
@@ -26,9 +27,9 @@ class GlobalExceptionHandler {
 
         return ResponseEntity<ErrorResponse>(response, customCode.status)
     }
-    @ExceptionHandler(NotFoundAccountException::class)
-    protected fun handleNotFoundAccountException(ex: NotFoundAccountException): ResponseEntity<ErrorResponse> {
-        val customCode = CustomExceptionCode.REQUEST_PARAMETER_BIND_FAILED
+    @ExceptionHandler(value = [NotFoundAccountException::class, NotFoundBoardException::class])
+    protected fun handleNotFoundException(ex: RuntimeException): ResponseEntity<ErrorResponse> {
+        val customCode = CustomExceptionCode.NOT_FOUND
         val response = ErrorResponse(
             message = customCode.message
         )
