@@ -6,6 +6,7 @@ import com.thepetto.core.api.global.security.handler.JwtAccessDeniedHandler
 import com.thepetto.core.api.global.security.handler.JwtAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -68,7 +69,8 @@ class SecurityConfig(
                 .requestMatchers("/api/v1/hello").permitAll()
                 .requestMatchers("/api/v1/accounts/token").permitAll() // 로그인 경로, 토큰 갱신 API 도 인증 없이 호출
                 .requestMatchers("/api/v1/members").permitAll() // 회원가입 경로는 인증없이 호출 가능
-                .anyRequest().authenticated() // 나머지 경로는 jwt 인증 해야함
+                .requestMatchers(HttpMethod.GET, "/api/v1/boards/**").permitAll() // 게시글조회
+            .anyRequest().authenticated() // 나머지 경로는 jwt 인증 해야함
 
             .and()
             .addFilterBefore(customJwtFilter, UsernamePasswordAuthenticationFilter::class.java) // 필터추가
