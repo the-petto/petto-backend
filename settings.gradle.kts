@@ -1,5 +1,6 @@
 rootProject.name = "backend"
 
 include("core:core-api",
-    "core:core-enum",
-    "support:swagger")
+        "core:core-enum",
+        "support:swagger",
+        "support:kotest")
