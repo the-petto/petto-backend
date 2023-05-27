@@ -23,11 +23,12 @@ class BoardServiceImpl(
     private val boardRepository: BoardRepository,
     private val accountRepository: AccountRepository,
     private val boardContentRepository: BoardContentRepository,
+    private val securityUtil: SecurityUtil,
 ) : BoardService {
 
     @Transactional
     override fun createBoardTypeAnimalWalk(requestCreateAnimalWalkBoardDto: RequestCreateAnimalWalkBoardDto): Long {
-        val username = SecurityUtil.currentUsername()
+        val username = securityUtil.currentUsername()
         val account = accountRepository.findOneWithAuthoritiesByUsername(username)
             ?: throw NotFoundAccountException()
 

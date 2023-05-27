@@ -3,9 +3,11 @@ package com.thepetto.core.api.global.security
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.stereotype.Component
 
 
-object SecurityUtil {
+@Component
+class SecurityUtil {
     fun currentUsername(): String {
         val authentication: Authentication = SecurityContextHolder.getContext().authentication
 
