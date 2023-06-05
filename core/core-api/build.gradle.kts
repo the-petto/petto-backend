@@ -14,4 +14,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("com.h2database:h2")
     implementation("org.flywaydb:flyway-core:8.5.5")
+
+    implementation("io.awspring.cloud:spring-cloud-starter-aws:2.4.4")
+
+    testImplementation("org.testcontainers:testcontainers:1.18.3")
+    testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:1.3.4")
 }

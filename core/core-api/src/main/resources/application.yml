@@ -4,6 +4,10 @@ spring:
   profiles:
     active: local # default profile을 지정한다.
 
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 ---
 ############################################ LOCAL
 
@@ -50,3 +54,15 @@ springdoc:
     path: /docs
   swagger-ui:
     path: /docs/index.html
+
+cloud:
+  aws:
+    credentials:
+      accessKey: accessKey
+      secretKey: secretKey
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: test

@@ -66,6 +66,7 @@ class SecurityConfig(
             .and()
             .authorizeHttpRequests()
                 .requestMatchers("/docs/**").permitAll() // rest docs 문서 접근 권한을 설정합니다.
+                .requestMatchers("/test").permitAll()
                 .requestMatchers("/api/v1/hello").permitAll()
                 .requestMatchers("/api/v1/accounts/token").permitAll() // 로그인 경로, 토큰 갱신 API 도 인증 없이 호출
                 .requestMatchers("/api/v1/members").permitAll() // 회원가입 경로는 인증없이 호출 가능
