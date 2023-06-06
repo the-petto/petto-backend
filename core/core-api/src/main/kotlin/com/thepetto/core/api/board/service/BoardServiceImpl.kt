@@ -4,19 +4,23 @@ import com.thepetto.core.api.account.repository.AccountRepository
 import com.thepetto.core.api.board.domain.Board
 import com.thepetto.core.api.board.domain.BoardCategory
 import com.thepetto.core.api.board.domain.BoardContent
+import com.thepetto.core.api.board.domain.BoardImage
 import com.thepetto.core.api.board.dto.RequestCreateAnimalWalkBoardDto
 import com.thepetto.core.api.board.dto.ResponseBoardListTypeAnimalWalkDto
 import com.thepetto.core.api.board.dto.ResponseBoardTypeAnimalWalkDto
 import com.thepetto.core.api.board.repository.BoardContentRepository
 import com.thepetto.core.api.board.repository.BoardRepository
+import com.thepetto.core.api.global.exception.custom.FailedUploadImageException
 import com.thepetto.core.api.global.exception.custom.NotFoundAccountException
 import com.thepetto.core.api.global.exception.custom.NotFoundBoardException
 import com.thepetto.core.api.global.security.SecurityUtil
+import com.thepetto.core.api.global.util.S3Uploader
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 class BoardServiceImpl(
@@ -24,6 +28,7 @@ class BoardServiceImpl(
     private val accountRepository: AccountRepository,
     private val boardContentRepository: BoardContentRepository,
     private val securityUtil: SecurityUtil,
+    private val s3Uploader: S3Uploader,
 ) : BoardService {
 
     @Transactional
@@ -38,15 +43,19 @@ class BoardServiceImpl(
             )
         )
 
-        val board = boardRepository.save(
-            Board(
-                account = account,
-                category = BoardCategory.ANIMAL_WALK,
-                title = requestCreateAnimalWalkBoardDto.title,
-                boardContent = boardContent,
-            )
+        var board = Board(
+            account = account,
+            category = BoardCategory.ANIMAL_WALK,
+            title = requestCreateAnimalWalkBoardDto.title,
+            boardContent = boardContent,
         )
 
+        requestCreateAnimalWalkBoardDto.images.forEach { it ->
+            val url: String = s3Uploader.upload(it, "animal-walk") ?: throw FailedUploadImageException()
+            board.addImage(BoardImage(board, url))
+        }
+
+        board = boardRepository.save(board)
         return board.id
     }
 

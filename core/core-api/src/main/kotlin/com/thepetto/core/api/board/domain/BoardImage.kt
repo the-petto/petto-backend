@@ -4,9 +4,9 @@ import com.thepetto.core.api.global.domain.BaseTimeEntity
 import jakarta.persistence.*
 
 @Entity
-class Comment(
+class BoardImage(
     board: Board,
-    content: String,
+    url: String,
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,11 @@ class Comment(
     var board: Board = board
         protected set
 
-    @Column(name = "content")
-    var content: String = content
+    @Column(name = "url")
+    var url: String = url
         protected set
+
+    fun updateBoard(board: Board) {
+        this.board = board
+    }
 }
