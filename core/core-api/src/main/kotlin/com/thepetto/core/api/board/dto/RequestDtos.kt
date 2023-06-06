@@ -1,7 +1,8 @@
 package com.thepetto.core.api.board.dto
 
+import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Size
+import org.springframework.web.multipart.MultipartFile
 
 data class RequestCreateAnimalWalkBoardDto(
     @field:NotNull
@@ -9,4 +10,7 @@ data class RequestCreateAnimalWalkBoardDto(
 
     @field:NotNull
     val content: String,
+
+    @Schema(title = "멀티파트 image File Array", description = "멀티 파트 image File Array")
+    val images: List<MultipartFile>
 )

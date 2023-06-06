@@ -57,3 +57,13 @@ CREATE TABLE comment (
     content TEXT NOT NULL,
     FOREIGN KEY (board_id) REFERENCES board (id)
 );
+
+/* BoardImage */
+CREATE TABLE board_image (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    created_date TIMESTAMP,
+    last_modified_date TIMESTAMP,
+    board_id BIGINT NOT NULL,
+    url VARCHAR(511) NOT NULL,
+    FOREIGN KEY (board_id) REFERENCES board (id)
+);

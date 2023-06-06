@@ -2,6 +2,7 @@ package com.thepetto.core.api.global.util
 
 import com.amazonaws.services.s3.AmazonS3
 import com.thepetto.core.api.createLocalstackGenericContainer
+import com.thepetto.core.api.createNormalImageFixture
 import com.thepetto.core.api.getCloudAwsPropertiesFixture
 import com.thepetto.core.api.getS3ClientFixture
 import com.thepetto.core.api.global.config.CloudAwsProperties
@@ -10,13 +11,9 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.testcontainers.TestContainerExtension
 import io.kotest.extensions.testcontainers.perTest
 import io.kotest.matchers.shouldNotBe
-import org.springframework.core.io.ClassPathResource
-import org.springframework.mock.web.MockMultipartFile
-import org.springframework.web.multipart.MultipartFile
-import java.nio.file.Files
 
 
-class S3UploaderTest : BehaviorSpec({
+class S3UploaderIntegrationTest : BehaviorSpec({
     val localstack = createLocalstackGenericContainer()
     val localstackContainer = install(TestContainerExtension(localstack))
     listener(localstackContainer.perTest())
@@ -25,22 +22,13 @@ class S3UploaderTest : BehaviorSpec({
     var s3Client: AmazonS3? = null
     var cloudAwsProperties: CloudAwsProperties? = null
 
-    fun loadImageAsMultipartFile(imagePath: String): MultipartFile {
-        val resource = ClassPathResource(imagePath)
-        val file = resource.file
-        val contentType = Files.probeContentType(file.toPath())
-        val originalFilename = file.name
-        val bytes = Files.readAllBytes(file.toPath())
-        return MockMultipartFile(imagePath, originalFilename, contentType, bytes)
-    }
-
     beforeTest {
         cloudAwsProperties = getCloudAwsPropertiesFixture()
         s3Client = getS3ClientFixture(localstackEndpoint, cloudAwsProperties!!)
     }
 
     Given("업로드 대상 파일이 주어졌을 때") {
-        val imageFile = loadImageAsMultipartFile("image/dog.jpeg")
+        val imageFile = createNormalImageFixture()
 
         val s3Uploader = S3Uploader(s3Client!!, cloudAwsProperties!!)
         Thread.sleep(5000)

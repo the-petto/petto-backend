@@ -9,15 +9,19 @@ data class ResponseBoardListTypeAnimalWalkDto(
     val nickname: String,
     val boardCategory: BoardCategory,
     val title: String,
+    val images: List<String>,
 ) {
     companion object {
         fun of(board: Board): ResponseBoardListTypeAnimalWalkDto {
+            val images = board.images.map { it.url }.toList()
+
             return ResponseBoardListTypeAnimalWalkDto(
                 boardId = board.id,
                 username = board.account.username,
                 nickname = board.account.nickname,
                 boardCategory = board.category,
                 title = board.title,
+                images = images,
             )
         }
     }
@@ -30,9 +34,12 @@ data class ResponseBoardTypeAnimalWalkDto(
     val boardCategory: BoardCategory,
     val title: String,
     val content: String,
+    val images: List<String>,
 ) {
     companion object {
         fun of(board: Board): ResponseBoardTypeAnimalWalkDto {
+            val images = board.images.map { it.url }.toList()
+
             return ResponseBoardTypeAnimalWalkDto(
                 boardId = board.id,
                 username = board.account.username,
@@ -40,6 +47,7 @@ data class ResponseBoardTypeAnimalWalkDto(
                 boardCategory = board.category,
                 title = board.title,
                 content = board.boardContent.content,
+                images = images,
             )
         }
     }

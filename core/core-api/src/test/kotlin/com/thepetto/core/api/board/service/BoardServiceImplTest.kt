@@ -9,7 +9,9 @@ import com.thepetto.core.api.board.domain.BoardContent
 import com.thepetto.core.api.board.dto.RequestCreateAnimalWalkBoardDto
 import com.thepetto.core.api.board.repository.BoardContentRepository
 import com.thepetto.core.api.board.repository.BoardRepository
+import com.thepetto.core.api.createNormalImageFixture
 import com.thepetto.core.api.global.security.SecurityUtil
+import com.thepetto.core.api.global.util.S3Uploader
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -20,44 +22,48 @@ class BoardServiceImplTest : BehaviorSpec({
     val accountRepository = mockk<AccountRepository>()
     val boardContentRepository = mockk<BoardContentRepository>()
     val securityUtil = mockk<SecurityUtil>()
+    val s3Uploader = mockk<S3Uploader>()
 
     val boardService = BoardServiceImpl(
-            boardRepository = boardRepository,
-            accountRepository = accountRepository,
-            boardContentRepository = boardContentRepository,
-            securityUtil = securityUtil,
+        boardRepository = boardRepository,
+        accountRepository = accountRepository,
+        boardContentRepository = boardContentRepository,
+        securityUtil = securityUtil,
+        s3Uploader = s3Uploader,
     )
 
     Given("타이틀과 제목이 주어진다면") {
         val requestCreateAnimalWalkBoardDto = RequestCreateAnimalWalkBoardDto(
-                title = "산책시켜주세요",
-                content = "귀여운 시츄입니다.",
+            title = "산책시켜주세요",
+            content = "귀여운 시츄입니다.",
+            images = listOf(createNormalImageFixture()),
         )
         val account = Account(
-                username = "hello",
-                password = "hello",
-                tokenWeight = 1L,
-                nickname = "hello",
-                activated = true,
-                mutableSetOf(Authority("MEMBER")),
+            username = "hello",
+            password = "hello",
+            tokenWeight = 1L,
+            nickname = "hello",
+            activated = true,
+            mutableSetOf(Authority("MEMBER")),
         )
         val boardContent = BoardContent(
-                content = requestCreateAnimalWalkBoardDto.content,
+            content = requestCreateAnimalWalkBoardDto.content,
         )
         val boardCategory = BoardCategory.ANIMAL_WALK
 
         every { boardContentRepository.save(any()) } returns boardContent
 
         every { boardRepository.save(any()) } returns Board(
-                account = account,
-                boardContent = boardContent,
-                category = boardCategory,
-                title = requestCreateAnimalWalkBoardDto.title,
+            account = account,
+            boardContent = boardContent,
+            category = boardCategory,
+            title = requestCreateAnimalWalkBoardDto.title,
         )
 
         every { securityUtil.currentUsername() } returns "hello"
         every { accountRepository.findOneWithAuthoritiesByUsername(any()) } returns account
 
+        every { s3Uploader.upload(any(), any()) } returns "http://ok"
 
         When("게시글을 작성했을 때") {
             val id = boardService.createBoardTypeAnimalWalk(requestCreateAnimalWalkBoardDto)

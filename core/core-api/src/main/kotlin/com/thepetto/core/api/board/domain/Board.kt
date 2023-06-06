@@ -18,10 +18,18 @@ class Board(
     @OneToOne
     @JoinColumn(name = "account_id")
     var account: Account = account
+        protected set
 
     @OneToOne
     @JoinColumn(name = "board_content_id")
     var boardContent: BoardContent = boardContent
+        protected set
+
+    @OneToMany(mappedBy = "board", cascade = [CascadeType.PERSIST])
+    private var _images: MutableList<BoardImage> = mutableListOf()
+
+    val images: List<BoardImage>
+        get() = _images
 
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
@@ -31,4 +39,9 @@ class Board(
     @Column(name = "title")
     var title: String = title
         protected set
+
+    fun addImage(boardImage: BoardImage) {
+        _images.add(boardImage)
+        boardImage.updateBoard(this)
+    }
 }
