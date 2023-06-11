@@ -5,12 +5,13 @@ import jakarta.persistence.*
 
 @Entity
 class Comment(
+    id: Long = 0L,
     board: Board,
     content: String,
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0L
+    val id: Long = id
 
     @ManyToOne
     @JoinColumn(name = "board_id")

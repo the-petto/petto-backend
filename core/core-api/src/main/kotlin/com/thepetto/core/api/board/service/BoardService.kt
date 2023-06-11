@@ -5,6 +5,7 @@ import com.thepetto.core.api.board.dto.ResponseBoardListTypeAnimalWalkDto
 import com.thepetto.core.api.board.dto.ResponseBoardTypeAnimalWalkDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.security.core.userdetails.User
 import org.springframework.web.multipart.MultipartFile
 
 interface BoardService {
@@ -12,4 +13,5 @@ interface BoardService {
 
     fun getBoardTypeAnimalWalkByPageable(pageable: Pageable): Page<ResponseBoardListTypeAnimalWalkDto>
     fun getBoardTypeAnimalWalk(boardId: Long): ResponseBoardTypeAnimalWalkDto
+    fun delete(boardId: Long, user: User): Boolean
 }

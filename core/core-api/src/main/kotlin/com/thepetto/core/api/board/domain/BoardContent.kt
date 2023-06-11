@@ -5,11 +5,12 @@ import jakarta.persistence.*
 
 @Entity
 class BoardContent(
+    id: Long = 0L,
     content: String,
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0L
+    val id: Long = id
 
     @Column(name = "content")
     var content: String = content

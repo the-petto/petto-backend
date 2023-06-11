@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.User
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -57,6 +59,20 @@ class BoardController(
             CommonResponse(
                 message = "success",
                 data = board,
+            ), HttpStatus.OK)
+    }
+
+    @PreAuthorize("hasAnyRole('MEMBER','ADMIN')")
+    @DeleteMapping("/boards/{boardId}")
+    fun deleteBoard(
+        @PathVariable boardId: Long,
+        @AuthenticationPrincipal user: User,
+    ): ResponseEntity<CommonResponse> {
+        boardService.delete(boardId, user)
+
+        return ResponseEntity<CommonResponse>(
+            CommonResponse(
+                message = "success",
             ), HttpStatus.OK)
     }
 }
