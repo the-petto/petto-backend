@@ -18,3 +18,5 @@ http://localhost:8080/docs/index.html
   * 산책해주세요 게시글을 조회한다.
 * `POST /api/v1/boards/animal-walks`
   * 산책해주세요 게시글을 작성한다.
+* `DELETE /api/v1/boards/{boardId}`
+  * 게시글을 삭제한다.
