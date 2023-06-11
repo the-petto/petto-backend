@@ -11,7 +11,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-
+import org.springframework.security.access.AccessDeniedException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -27,6 +27,17 @@ class GlobalExceptionHandler {
 
         return ResponseEntity<ErrorResponse>(response, customCode.status)
     }
+
+    @ExceptionHandler(value = [AccessDeniedException::class])
+    protected fun handleAccessDeniedException(ex: InvalidRefreshTokenException): ResponseEntity<ErrorResponse> {
+        val customCode = CustomExceptionCode.ACCESS_DENIED
+        val response = ErrorResponse(
+            message = customCode.message
+        )
+
+        return ResponseEntity<ErrorResponse>(response, customCode.status)
+    }
+
     @ExceptionHandler(value = [NotFoundAccountException::class, NotFoundBoardException::class])
     protected fun handleNotFoundException(): ResponseEntity<ErrorResponse> {
         val customCode = CustomExceptionCode.NOT_FOUND
@@ -37,7 +48,7 @@ class GlobalExceptionHandler {
         return ResponseEntity<ErrorResponse>(response, customCode.status)
     }
 
-    @ExceptionHandler(DuplicateMemberException::class)
+    @ExceptionHandler(value = [DuplicateMemberException::class])
     protected fun handleDuplicateMemberException(ex: DuplicateMemberException): ResponseEntity<ErrorResponse> {
         val customCode = CustomExceptionCode.DUPLICATE_MEMBER_EXCEPTION
         val response = ErrorResponse(
@@ -47,7 +58,7 @@ class GlobalExceptionHandler {
         return ResponseEntity<ErrorResponse>(response, customCode.status)
     }
 
-    @ExceptionHandler(InvalidRefreshTokenException::class)
+    @ExceptionHandler(value = [InvalidRefreshTokenException::class])
     protected fun handleInvalidRefreshTokenException(ex: InvalidRefreshTokenException): ResponseEntity<ErrorResponse> {
         val customCode = CustomExceptionCode.INVALID_REFRESH_TOKEN
         val response = ErrorResponse(

@@ -5,18 +5,19 @@ import jakarta.persistence.*
 
 
 @Entity
-class Account (
+class Account(
+    id: Long = 0L,
     username: String,
     password: String,
     tokenWeight: Long,
     nickname: String,
     activated: Boolean,
     authorities: MutableSet<Authority>,
- ) : BaseTimeEntity() {
+) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
-    val id: Long = 0L
+    val id: Long = id
 
     @Column(name = "username", length = 50, unique = true)
     var username: String = username
@@ -50,5 +51,11 @@ class Account (
 
     fun increaseTokenWeight() {
         tokenWeight++
+    }
+
+    fun isMember(): Boolean {
+        return authorities.any {
+            it.authorityName == "ROLE_MEMBER"
+        }
     }
 }

@@ -18,9 +18,10 @@ import com.thepetto.core.api.global.util.S3Uploader
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
+import org.springframework.security.access.AccessDeniedException
 
 @Service
 class BoardServiceImpl(
@@ -52,7 +53,7 @@ class BoardServiceImpl(
 
         requestCreateAnimalWalkBoardDto.images.forEach { it ->
             val url: String = s3Uploader.upload(it, "animal-walk") ?: throw FailedUploadImageException()
-            board.addImage(BoardImage(board, url))
+            board.addImage(BoardImage(board = board, url = url))
         }
 
         board = boardRepository.save(board)
@@ -73,5 +74,20 @@ class BoardServiceImpl(
             ?: throw NotFoundBoardException()
 
         return ResponseBoardTypeAnimalWalkDto.of(board)
+    }
+
+    @Transactional
+    override fun delete(boardId: Long, user: User): Boolean {
+        val account = accountRepository.findOneWithAuthoritiesByUsername(username = user.username)
+            ?: throw NotFoundAccountException()
+        val board = boardRepository.findByIdOrNull(boardId)
+            ?: throw NotFoundBoardException()
+
+        if (account.isMember() && account.id != board.account.id) {
+            throw AccessDeniedException("본인의 게시글만 삭제할 수 있습니다")
+        }
+
+        boardRepository.delete(board)
+        return true
     }
 }

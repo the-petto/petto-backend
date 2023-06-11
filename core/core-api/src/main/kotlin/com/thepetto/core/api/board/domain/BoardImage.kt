@@ -5,12 +5,13 @@ import jakarta.persistence.*
 
 @Entity
 class BoardImage(
+    id: Long = 0L,
     board: Board,
     url: String,
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0L
+    val id: Long = id
 
     @ManyToOne
     @JoinColumn(name = "board_id")

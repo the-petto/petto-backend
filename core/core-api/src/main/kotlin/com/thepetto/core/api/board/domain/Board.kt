@@ -6,6 +6,7 @@ import jakarta.persistence.*
 
 @Entity
 class Board(
+    id: Long = 0L,
     account: Account,
     category: BoardCategory,
     title: String,
@@ -13,7 +14,7 @@ class Board(
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0L
+    val id: Long = id
 
     @OneToOne
     @JoinColumn(name = "account_id")
