@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -35,15 +36,16 @@ class BoardController(
 
         return ResponseEntity<CommonResponse>(
             CommonResponse(
-            message = "success",
-            data = boardId,
-        ), HttpStatus.CREATED)
+                message = "success",
+                data = boardId,
+            ), HttpStatus.CREATED
+        )
     }
 
     @Operation(summary = "산책해주세요 게시글 조회", description = "산책해주세요 게시글을 조회합니다. 페이징을 수행합니다.")
     @GetMapping("/boards/animal-walks")
     fun getBoardTypeAnimalWalk(
-        @PageableDefault(sort = ["boardId"]) pageable: Pageable
+        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
     ): ResponseEntity<CommonResponse> {
         val boards = boardService.getBoardTypeAnimalWalkByPageable(pageable)
 
@@ -51,7 +53,8 @@ class BoardController(
             CommonResponse(
                 message = "success",
                 data = boards,
-            ), HttpStatus.OK)
+            ), HttpStatus.OK
+        )
     }
 
     @Operation(summary = "산책해주세요 게시글 상세 조회", description = "산책해주세요 게시글을 상세조회 합니다. 보드 식별값이 필요합니다.")
@@ -65,7 +68,8 @@ class BoardController(
             CommonResponse(
                 message = "success",
                 data = board,
-            ), HttpStatus.OK)
+            ), HttpStatus.OK
+        )
     }
 
     @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다. 어드민만 호출 가능합니다.")
@@ -80,6 +84,7 @@ class BoardController(
         return ResponseEntity<CommonResponse>(
             CommonResponse(
                 message = "success",
-            ), HttpStatus.OK)
+            ), HttpStatus.OK
+        )
     }
 }
