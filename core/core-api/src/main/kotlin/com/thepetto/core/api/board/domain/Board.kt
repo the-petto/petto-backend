@@ -11,6 +11,7 @@ class Board(
     category: BoardCategory,
     title: String,
     boardContent: BoardContent,
+    boardStatus: BoardStatus,
 ) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +20,6 @@ class Board(
     @OneToOne
     @JoinColumn(name = "account_id")
     var account: Account = account
-        protected set
-
-    @OneToOne
-    @JoinColumn(name = "board_content_id")
-    var boardContent: BoardContent = boardContent
         protected set
 
     @OneToMany(mappedBy = "board", cascade = [CascadeType.PERSIST])
@@ -37,12 +33,26 @@ class Board(
     var category: BoardCategory = category
         protected set
 
+    @Column(name = "board_status")
+    @Enumerated(EnumType.STRING)
+    var boardStatus: BoardStatus = boardStatus
+        protected set
+
     @Column(name = "title")
     var title: String = title
+        protected set
+
+    @OneToOne
+    @JoinColumn(name = "board_content_id")
+    var boardContent: BoardContent = boardContent
         protected set
 
     fun addImage(boardImage: BoardImage) {
         _images.add(boardImage)
         boardImage.updateBoard(this)
+    }
+
+    fun changeStatus(boardStatus: BoardStatus) {
+        this.boardStatus = boardStatus
     }
 }

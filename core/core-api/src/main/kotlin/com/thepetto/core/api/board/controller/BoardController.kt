@@ -1,6 +1,7 @@
 package com.thepetto.core.api.board.controller
 
 import com.thepetto.core.api.board.dto.RequestCreateAnimalWalkBoardDto
+import com.thepetto.core.api.board.dto.RequestPatchBoardStatusDto
 import com.thepetto.core.api.board.service.BoardService
 import com.thepetto.core.api.global.dto.CommonResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -72,7 +73,7 @@ class BoardController(
         )
     }
 
-    @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다. 어드민만 호출 가능합니다.")
+    @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다. 본인 게시글만 삭제하거나 어드민만 호출 가능합니다.")
     @PreAuthorize("hasAnyRole('MEMBER','ADMIN')")
     @DeleteMapping("/boards/{boardId}")
     fun deleteBoard(
@@ -80,6 +81,23 @@ class BoardController(
         @AuthenticationPrincipal user: User,
     ): ResponseEntity<CommonResponse> {
         boardService.delete(boardId, user)
+
+        return ResponseEntity<CommonResponse>(
+            CommonResponse(
+                message = "success",
+            ), HttpStatus.OK
+        )
+    }
+
+    @Operation(summary = "게시글 상태 변경", description = "게시글 상태를 변경합니다.")
+    @PreAuthorize("hasAnyRole('MEMBER','ADMIN')")
+    @PatchMapping("/boards/{boardId}/status")
+    fun patchBoard(
+        @PathVariable boardId: Long,
+        @AuthenticationPrincipal user: User,
+        @RequestBody @Valid requestPatchBoardStatusDto: RequestPatchBoardStatusDto,
+    ): ResponseEntity<CommonResponse> {
+        boardService.patchStatus(boardId, user, requestPatchBoardStatusDto)
 
         return ResponseEntity<CommonResponse>(
             CommonResponse(

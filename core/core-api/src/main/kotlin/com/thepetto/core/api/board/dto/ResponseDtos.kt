@@ -2,12 +2,14 @@ package com.thepetto.core.api.board.dto
 
 import com.thepetto.core.api.board.domain.Board
 import com.thepetto.core.api.board.domain.BoardCategory
+import com.thepetto.core.api.board.domain.BoardStatus
 
 data class ResponseBoardListTypeAnimalWalkDto(
     val boardId: Long,
     val username: String,
     val nickname: String,
     val boardCategory: BoardCategory,
+    val boardStatus: BoardStatus,
     val title: String,
     val images: List<String>,
 ) {
@@ -20,6 +22,7 @@ data class ResponseBoardListTypeAnimalWalkDto(
                 username = board.account.username,
                 nickname = board.account.nickname,
                 boardCategory = board.category,
+                boardStatus = board.boardStatus,
                 title = board.title,
                 images = images,
             )
@@ -32,6 +35,7 @@ data class ResponseBoardTypeAnimalWalkDto(
     val username: String,
     val nickname: String,
     val boardCategory: BoardCategory,
+    val boardStatus: BoardStatus,
     val title: String,
     val content: String,
     val images: List<String>,
@@ -45,6 +49,7 @@ data class ResponseBoardTypeAnimalWalkDto(
                 username = board.account.username,
                 nickname = board.account.nickname,
                 boardCategory = board.category,
+                boardStatus = board.boardStatus,
                 title = board.title,
                 content = board.boardContent.content,
                 images = images,
