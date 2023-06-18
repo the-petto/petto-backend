@@ -1,6 +1,7 @@
 package com.thepetto.core.api.board.service
 
 import com.thepetto.core.api.board.dto.RequestCreateAnimalWalkBoardDto
+import com.thepetto.core.api.board.dto.RequestPatchBoardStatusDto
 import com.thepetto.core.api.board.dto.ResponseBoardListTypeAnimalWalkDto
 import com.thepetto.core.api.board.dto.ResponseBoardTypeAnimalWalkDto
 import org.springframework.data.domain.Page
@@ -14,4 +15,5 @@ interface BoardService {
     fun getBoardTypeAnimalWalkByPageable(pageable: Pageable): Page<ResponseBoardListTypeAnimalWalkDto>
     fun getBoardTypeAnimalWalk(boardId: Long): ResponseBoardTypeAnimalWalkDto
     fun delete(boardId: Long, user: User): Boolean
+    fun patchStatus(boardId: Long, user: User, requestPatchBoardStatusDto: RequestPatchBoardStatusDto)
 }

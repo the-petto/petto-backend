@@ -1,5 +1,6 @@
 package com.thepetto.core.api.board.dto
 
+import com.thepetto.core.api.board.domain.BoardStatus
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
 import org.springframework.web.multipart.MultipartFile
@@ -13,4 +14,9 @@ data class RequestCreateAnimalWalkBoardDto(
 
     @Schema(title = "멀티파트 image File Array", description = "멀티 파트 image File Array")
     val images: List<MultipartFile>
+)
+
+data class RequestPatchBoardStatusDto(
+    @field:NotNull
+    val boardStatus: BoardStatus,
 )

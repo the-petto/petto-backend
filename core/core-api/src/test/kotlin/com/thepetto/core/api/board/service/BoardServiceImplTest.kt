@@ -5,7 +5,9 @@ import com.thepetto.core.api.account.repository.AccountRepository
 import com.thepetto.core.api.board.domain.Board
 import com.thepetto.core.api.board.domain.BoardCategory
 import com.thepetto.core.api.board.domain.BoardContent
+import com.thepetto.core.api.board.domain.BoardStatus
 import com.thepetto.core.api.board.dto.RequestCreateAnimalWalkBoardDto
+import com.thepetto.core.api.board.dto.RequestPatchBoardStatusDto
 import com.thepetto.core.api.board.repository.BoardContentRepository
 import com.thepetto.core.api.board.repository.BoardRepository
 import com.thepetto.core.api.createNormalImageFixture
@@ -53,6 +55,7 @@ class BoardServiceImplTest : BehaviorSpec({
             boardContent = boardContent,
             category = boardCategory,
             title = requestCreateAnimalWalkBoardDto.title,
+            boardStatus = BoardStatus.PROCEEDING,
         )
 
         every { securityUtil.currentUsername() } returns "hello"
@@ -81,6 +84,7 @@ class BoardServiceImplTest : BehaviorSpec({
                 boardContent = BoardContent(content = "test"),
                 category = BoardCategory.ANIMAL_WALK,
                 title = "test",
+                boardStatus = BoardStatus.PROCEEDING,
             )
             every { boardRepository.delete(any()) } returns Unit
 
@@ -96,6 +100,7 @@ class BoardServiceImplTest : BehaviorSpec({
                 boardContent = BoardContent(content = "test"),
                 category = BoardCategory.ANIMAL_WALK,
                 title = "test",
+                boardStatus = BoardStatus.PROCEEDING,
             )
 
 
@@ -120,10 +125,37 @@ class BoardServiceImplTest : BehaviorSpec({
                 boardContent = BoardContent(content = "test"),
                 category = BoardCategory.ANIMAL_WALK,
                 title = "test",
+                boardStatus = BoardStatus.PROCEEDING,
             )
 
             Then("삭제에 성공한다") {
                 boardService.delete(targetBoardId, adminUser) shouldBe true
+            }
+        }
+    }
+
+    Given("변경하고자 하는 보드 상태가 주어졌을 때") {
+        val member = AccountFixture.createRoleMember(username = "member")
+        val anotherMember = AccountFixture.createRoleMember(id = -1L, username = "member2")
+        val memberUser = AccountFixture.convertUserDetailsToUser(member)
+        val requestPatchBoardStatusDto = RequestPatchBoardStatusDto(
+            boardStatus = BoardStatus.FINISH
+        )
+        val targetId = 1L
+
+        When("남이 작성한 게시물이라면") {
+            every { boardRepository.findByIdOrNull(any()) } returns Board(
+                account = anotherMember.account,
+                boardContent = BoardContent(content = "test"),
+                category = BoardCategory.ANIMAL_WALK,
+                title = "test",
+                boardStatus = BoardStatus.PROCEEDING,
+            )
+
+            Then("변경에 실패하고 예외를 발생시킨다.") {
+                shouldThrow<org.springframework.security.access.AccessDeniedException> {
+                    boardService.patchStatus(targetId, memberUser, requestPatchBoardStatusDto)
+                }
             }
         }
     }

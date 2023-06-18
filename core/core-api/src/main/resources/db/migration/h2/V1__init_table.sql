@@ -44,6 +44,7 @@ CREATE TABLE board (
     board_content_id BIGINT NOT NULL,
     category VARCHAR(127) NOT NULL,
     title VARCHAR(511) NOT NULL,
+    board_status VARCHAR(127) NOT NULL,
     FOREIGN KEY (account_id) REFERENCES account (account_id),
     FOREIGN KEY (board_content_id) REFERENCES board_content (id)
 );

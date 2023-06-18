@@ -1,11 +1,9 @@
 package com.thepetto.core.api.board.service
 
 import com.thepetto.core.api.account.repository.AccountRepository
-import com.thepetto.core.api.board.domain.Board
-import com.thepetto.core.api.board.domain.BoardCategory
-import com.thepetto.core.api.board.domain.BoardContent
-import com.thepetto.core.api.board.domain.BoardImage
+import com.thepetto.core.api.board.domain.*
 import com.thepetto.core.api.board.dto.RequestCreateAnimalWalkBoardDto
+import com.thepetto.core.api.board.dto.RequestPatchBoardStatusDto
 import com.thepetto.core.api.board.dto.ResponseBoardListTypeAnimalWalkDto
 import com.thepetto.core.api.board.dto.ResponseBoardTypeAnimalWalkDto
 import com.thepetto.core.api.board.repository.BoardContentRepository
@@ -49,6 +47,7 @@ class BoardServiceImpl(
             category = BoardCategory.ANIMAL_WALK,
             title = requestCreateAnimalWalkBoardDto.title,
             boardContent = boardContent,
+            boardStatus = BoardStatus.PROCEEDING,
         )
 
         requestCreateAnimalWalkBoardDto.images.forEach { it ->
@@ -89,5 +88,17 @@ class BoardServiceImpl(
 
         boardRepository.delete(board)
         return true
+    }
+
+    @Transactional
+    override fun patchStatus(boardId: Long, user: User, requestPatchBoardStatusDto: RequestPatchBoardStatusDto) {
+        val board = boardRepository.findByIdOrNull(boardId)
+            ?: throw NotFoundBoardException()
+
+        if(board.account.username != user.username) {
+            throw AccessDeniedException("본인의 게시글만 변경할 수 있습니다")
+        }
+
+        board.changeStatus(requestPatchBoardStatusDto.boardStatus)
     }
 }
