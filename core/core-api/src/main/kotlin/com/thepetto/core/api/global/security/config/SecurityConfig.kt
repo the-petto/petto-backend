@@ -1,8 +1,10 @@
 package com.thepetto.core.api.global.security.config
 
+import com.thepetto.core.api.global.security.handler.OAuth2AuthenticationSuccessHandler
 import com.thepetto.core.api.global.security.CustomJwtFilter
 import com.thepetto.core.api.global.security.handler.JwtAccessDeniedHandler
 import com.thepetto.core.api.global.security.handler.JwtAuthenticationEntryPoint
+import com.thepetto.core.api.oauth2account.application.OAuth2AccountServiceImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -23,7 +25,9 @@ import org.springframework.web.filter.CorsFilter
 class SecurityConfig(
     private val corsFilter: CorsFilter,
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
-    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler
+    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler,
+    private val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
+    private val oAuth2AccountService: OAuth2AccountServiceImpl,
 ) {
 
     @Bean
@@ -52,6 +56,16 @@ class SecurityConfig(
             .requestMatchers("/h2/**").permitAll()
             .requestMatchers("/favicon.ico").permitAll()
             .requestMatchers("/error").permitAll()
+
+            .and()
+            .oauth2Login() // oAuth 로그인 활성화
+            .userInfoEndpoint()
+            .userService(oAuth2AccountService) // oAuth 정보를 불러오는 부분 필요 시 회원 등록
+            .and()
+            .successHandler(oAuth2AuthenticationSuccessHandler) // 등록된 회원정보로 jwt 토큰 발급 부분
+            .and()
+            .authorizeHttpRequests()
+            .requestMatchers("/login/**").permitAll()
 
             .and()
             .authorizeHttpRequests()

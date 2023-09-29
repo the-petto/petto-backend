@@ -48,6 +48,26 @@ class AccountServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    override fun authenticate(oauth2UniqueId: String): ResponseTokenDto {
+        val account = accountRepository.findOneWithAuthoritiesByOAuth2UniqueId(oauth2UniqueId)
+            ?: throw NotFoundAccountException()
+        val accountAdapter = AccountAdapter(account)
+
+        val authentication = UsernamePasswordAuthenticationToken(
+            accountAdapter,
+            "",
+            accountAdapter.authorities)
+
+        val accessToken: String = tokenProvider.createToken(authentication, account.tokenWeight)
+        val refreshToken: String = refreshTokenProvider.createToken(authentication, account.tokenWeight)
+
+        return ResponseTokenDto(
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+        )
+    }
+
+    @Transactional(readOnly = true)
     override fun refreshToken(requestRefreshTokenDto: RequestRefreshTokenDto): ResponseTokenDto {
 
         if (!refreshTokenProvider.validateToken(requestRefreshTokenDto.refreshToken)) {
@@ -60,7 +80,6 @@ class AccountServiceImpl(
 
         if (account.tokenWeight > refreshTokenProvider.getTokenWeight(requestRefreshTokenDto.refreshToken))
             throw InvalidRefreshTokenException()
-
 
         val accessToken = tokenProvider.createToken(authentication, account.tokenWeight)
         val refreshToken = refreshTokenProvider.createToken(authentication, account.tokenWeight)

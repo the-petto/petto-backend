@@ -1,6 +1,7 @@
 package com.thepetto.core.api.account.domain.entity
 
 import com.thepetto.core.api.global.domain.BaseTimeEntity
+import com.thepetto.core.api.oauth2account.domain.entity.OAuth2Account
 import jakarta.persistence.*
 
 
@@ -48,6 +49,12 @@ class Account(
     )
     var authorities: MutableSet<Authority> = authorities
         protected set
+
+    @OneToMany(mappedBy = "account", cascade = [CascadeType.PERSIST])
+    private var _oAuth2Accounts: MutableList<OAuth2Account> = mutableListOf()
+
+    val oAuth2Accounts: List<OAuth2Account>
+        get() = _oAuth2Accounts
 
     fun increaseTokenWeight() {
         tokenWeight++

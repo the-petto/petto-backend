@@ -23,6 +23,17 @@ CREATE TABLE account_authority (
     FOREIGN KEY (authority_name) REFERENCES authority (authority_name)
 );
 
+/* oauth2Account 스키마 */
+CREATE TABLE oauth2_account (
+    created_date TIMESTAMP,
+    last_modified_date TIMESTAMP,
+    id VARCHAR(127) NOT NULL PRIMARY KEY,
+    provider_id VARCHAR(127),
+    provider VARCHAR(127),
+    account_id BIGINT,
+    FOREIGN KEY (account_id) REFERENCES account (account_id)
+);
+
 /* 초기 필수 권한 */
 INSERT INTO AUTHORITY (AUTHORITY_NAME) values ('ROLE_MEMBER');
 INSERT INTO AUTHORITY (AUTHORITY_NAME) values ('ROLE_ADMIN');

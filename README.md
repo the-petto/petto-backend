@@ -23,3 +23,13 @@ http://localhost:8080/docs/index.html
 
 # 시스템 아키텍처
 ![image](https://github.com/the-petto/petto-backend/assets/35598710/b6598ee5-fd73-4e45-98b0-bde441da3520)
+
+# gradle build
+```
+./gradlew bootJar -p core/core-api
+```
+
+# java run
+```
+java -jar core/core-api/build/libs/core-api-0.0.1-SNAPSHOT.jar --server.port=8080
+```
