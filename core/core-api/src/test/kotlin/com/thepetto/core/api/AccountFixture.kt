@@ -1,8 +1,8 @@
 package com.thepetto.core.api
 
-import com.thepetto.core.api.account.domain.Account
-import com.thepetto.core.api.account.domain.AccountAdapter
-import com.thepetto.core.api.account.domain.Authority
+import com.thepetto.core.api.account.domain.entity.Account
+import com.thepetto.core.api.account.domain.entity.AccountAdapter
+import com.thepetto.core.api.account.domain.entity.Authority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 
