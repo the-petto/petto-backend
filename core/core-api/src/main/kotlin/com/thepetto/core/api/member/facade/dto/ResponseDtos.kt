@@ -1,4 +1,4 @@
-package com.thepetto.core.api.member.application.dto
+package com.thepetto.core.api.member.facade.dto
 
 import com.thepetto.core.api.account.domain.entity.Account
 

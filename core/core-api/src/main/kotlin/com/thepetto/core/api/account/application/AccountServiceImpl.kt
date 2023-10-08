@@ -1,28 +1,32 @@
 package com.thepetto.core.api.account.application
 
+import com.thepetto.core.api.account.application.dto.*
 import com.thepetto.core.api.account.domain.entity.Account
 import com.thepetto.core.api.account.domain.entity.AccountAdapter
-import com.thepetto.core.api.account.application.dto.RequestAuthenticateDto
-import com.thepetto.core.api.account.application.dto.RequestRefreshTokenDto
-import com.thepetto.core.api.account.application.dto.ResponseTokenDto
 import com.thepetto.core.api.account.domain.AccountRepository
+import com.thepetto.core.api.account.domain.entity.Authority
+import com.thepetto.core.api.global.exception.custom.DuplicateMemberException
 import com.thepetto.core.api.global.exception.custom.InvalidRefreshTokenException
+import com.thepetto.core.api.global.exception.custom.NotFoundAccountException
 import com.thepetto.core.api.global.security.TokenProvider
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 
 @Service
 class AccountServiceImpl(
     @Qualifier("tokenProvider") val tokenProvider: TokenProvider,
     @Qualifier("refreshTokenProvider") val refreshTokenProvider: TokenProvider,
-    val authenticationManagerBuilder : AuthenticationManagerBuilder,
-    val accountRepository: AccountRepository,
+    private val authenticationManagerBuilder : AuthenticationManagerBuilder,
+    private val accountRepository: AccountRepository,
+    private val passwordEncoder: PasswordEncoder,
 ) : AccountService {
 
     override fun authenticate(requestAuthenticateDto: RequestAuthenticateDto): ResponseTokenDto {
@@ -72,5 +76,37 @@ class AccountServiceImpl(
         val account: Account = accountRepository.findOneWithAuthoritiesByUsername(username)
             ?: throw UsernameNotFoundException("$username 을 찾을 수 없습니다")
         account.increaseTokenWeight() // 더티체킹에 의해 엔티티 변화 반영
+    }
+
+    @Transactional
+    override fun registerMemberAccount(registerDto: RequestRegisterMemberAccountDto): ResponseRegisterMemberAccountDto {
+        accountRepository.findOneWithAuthoritiesByUsername(registerDto.username)?.let {
+            throw DuplicateMemberException()
+        }
+
+        val authority = Authority(authorityName = "ROLE_MEMBER")
+
+        val user = Account(
+            username = registerDto.username,
+            password = passwordEncoder.encode(
+                registerDto.password
+            ),
+            nickname = registerDto.nickname,
+            authorities = Collections.singleton(authority),
+            activated = true,
+            tokenWeight = 1
+        )
+
+        return ResponseRegisterMemberAccountDto.of(
+            accountRepository.save(user)
+        )
+    }
+
+    @Transactional(readOnly = true)
+    override fun getAccountWithAuthorities(username: String): ResponseRegisterMemberAccountDto {
+        val user = accountRepository.findOneWithAuthoritiesByUsername(username)
+            ?: throw NotFoundAccountException()
+
+        return ResponseRegisterMemberAccountDto.of(user)
     }
 }

@@ -1,8 +1,8 @@
 package com.thepetto.core.api.member.presentation
 
 import com.thepetto.core.api.global.dto.CommonResponse
-import com.thepetto.core.api.member.application.dto.RequestRegisterMemberDto
-import com.thepetto.core.api.member.application.MemberService
+import com.thepetto.core.api.member.facade.dto.RequestRegisterMemberDto
+import com.thepetto.core.api.member.facade.MemberFacade
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v1")
 class MemberController(
-    private val memberService: MemberService
+    private val memberFacade: MemberFacade
 ) {
 
     @Operation(summary = "멤버 생성", description = "멤버 권한을 가진 사용자를 생성합니다.")
@@ -26,7 +26,7 @@ class MemberController(
     fun signup(
         @Valid @RequestBody registerDto: RequestRegisterMemberDto
     ): ResponseEntity<CommonResponse> {
-        val userInfo = memberService.signup(registerDto)
+        val userInfo = memberFacade.signup(registerDto)
 
         return ResponseEntity<CommonResponse>(CommonResponse(
             message = "success",

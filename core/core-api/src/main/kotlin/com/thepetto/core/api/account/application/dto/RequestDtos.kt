@@ -17,3 +17,17 @@ data class RequestRefreshTokenDto(
     @field:NotNull
     val refreshToken: String,
 )
+
+data class RequestRegisterMemberAccountDto(
+    @field:NotNull
+    @field:Size(min = 3, max = 50)
+    val username: String,
+
+    @field:NotNull
+    @field:Size(min = 5, max = 100)
+    val password: String,
+
+    @field:NotNull
+    @field:Size(min = 5, max = 100)
+    val nickname: String,
+)

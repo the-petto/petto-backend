@@ -1,6 +1,5 @@
 package com.thepetto.core.api.global.security.config
 
-import com.thepetto.core.api.global.security.TokenProvider
 import com.thepetto.core.api.global.security.CustomJwtFilter
 import com.thepetto.core.api.global.security.handler.JwtAccessDeniedHandler
 import com.thepetto.core.api.global.security.handler.JwtAuthenticationEntryPoint
@@ -10,10 +9,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.filter.CorsFilter
@@ -29,12 +25,6 @@ class SecurityConfig(
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
     private val jwtAccessDeniedHandler: JwtAccessDeniedHandler
 ) {
-
-    // BCryptPasswordEncoder 라는 패스워드 인코더 사용
-    @Bean
-    fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
-    }
 
     @Bean
     fun filterChain(httpSecurity: HttpSecurity, customJwtFilter: CustomJwtFilter): SecurityFilterChain {
